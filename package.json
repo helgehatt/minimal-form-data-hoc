@@ -1,0 +1,25 @@
+{
+  "name": "minimal-form-data-hoc",
+  "version": "1.0.0",
+  "description": "A minimalistic HOC for typed form data in React",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "react",
+    "react form",
+    "minimal form",
+    "form data"
+  ],
+  "author": "helgehatt",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^16.9.53",
+    "react": "^16.14.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0"
+  }
+}
