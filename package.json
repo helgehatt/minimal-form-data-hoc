@@ -13,11 +13,14 @@
     "minimal form",
     "form data"
   ],
+  "repository": {
+    "url": "https://github.com/helgehatt/minimal-form-data-hoc",
+    "type": "git"
+  },
   "author": "helgehatt",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "@types/react": "^16.9.53",
-    "react": "^16.14.0"
+    "@types/react": "^16.9.53"
   },
   "peerDependencies": {
     "react": "^16.8.0"
