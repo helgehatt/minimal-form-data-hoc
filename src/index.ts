@@ -39,7 +39,7 @@ export const withFormData = <T extends FormScheme, R>(scheme: T) => (Component: 
 
   const [data, setData] = React.useState(Object.keys(scheme).reduce(
     (acc, key) => Object.assign(acc, { [key]: {
-      value: scheme[key].value || '',
+      value: scheme[key].value ?? '',
       error: validate(key, scheme[key].value),
       onChange: onChange(key),
     }}), {} as FormData<T>,
@@ -57,14 +57,14 @@ const getElementValue = (input: HTMLInputElement) => {
 };
 
 const getCheckboxValue = (input: HTMLInputElement) => {
-  if (input.name === undefined) return input.checked;
+  if (!input.name) return input.checked;
   return getElementsByName(input.name)
     .filter(element => element.checked)
     .map(element => element.value);
 };
 
 const getRadioValue = (input: HTMLInputElement) => {
-  if (input.name === undefined) return input.checked;
+  if (!input.name) return input.checked;
   return getElementsByName(input.name)
     .find(element => element.checked)
     ?.value;
