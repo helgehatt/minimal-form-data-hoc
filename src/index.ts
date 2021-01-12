@@ -18,7 +18,10 @@ type FormComponent<T, R> = React.ComponentType<R & { data: FormData<T> }>
 
 export const createFormScheme = <T extends FormScheme>(scheme: T) => scheme;
 
-export const withFormData = <T extends FormScheme, R>(scheme: T) => (Component: FormComponent<T, R>) => (props: R) => {
+export const withFormData = <T extends FormScheme, R = {}>(schemeFactory: (props: R) => T) => 
+  (Component: FormComponent<T, R>) => (props: R) => {
+
+  const [scheme] = React.useState(schemeFactory(props));
 
   const [rules] = React.useState(Object.keys(scheme).reduce(
     (acc, key) => Object.assign(acc, { [key]: scheme[key].rules || [] }),
