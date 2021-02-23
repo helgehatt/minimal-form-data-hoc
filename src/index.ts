@@ -1,27 +1,29 @@
 import React from 'react';
 
 type Error = any | undefined;
-type Rule = [Error, (value: any) => boolean];
+type Rule = Readonly<[Error, (value: any) => boolean]>;
 
-interface FormScheme extends Record<string, {
+interface FormSchemeItem {
   value: any
-  rules?: Array<Rule>
-}> {}
+  rules?: Readonly<Array<Rule>>
+}
 
-type FormData<T> = Record<keyof T, {
+interface FormDataItem {
   value: any
   error: Error
   onChange: (event: any) => void
-}>;
+}
 
-type FormComponent<T, R> = React.ComponentType<R & { data: FormData<T> }>
+type FormScheme = Readonly<Record<string, Readonly<FormSchemeItem>>>;
+type FormData<T> = Readonly<Record<keyof T, Readonly<FormDataItem>>>;
+type FormComponent<T, R> = React.ComponentType<R & FormData<T>>
 
-export const createFormScheme = <T extends FormScheme>(scheme: T) => scheme;
+const createFormScheme = <T extends FormScheme, R = {}>(schemeConstructor: (props: R) => T) => schemeConstructor;
 
-export const withFormData = <T extends FormScheme, R = {}>(schemeFactory: (props: R) => T) => 
+const withFormData = <T extends FormScheme, R = {}>(schemeConstructor: (props: R) => T) => 
   (Component: FormComponent<T, R>) => (props: R) => {
 
-  const [scheme] = React.useState(schemeFactory(props));
+  const [scheme] = React.useState(schemeConstructor(props));
 
   const [rules] = React.useState(Object.keys(scheme).reduce(
     (acc, key) => Object.assign(acc, { [key]: scheme[key].rules || [] }),
@@ -42,13 +44,13 @@ export const withFormData = <T extends FormScheme, R = {}>(schemeFactory: (props
 
   const [data, setData] = React.useState(Object.keys(scheme).reduce(
     (acc, key) => Object.assign(acc, { [key]: {
-      value: scheme[key].value ?? '',
+      value: scheme[key].value,
       error: validate(key, scheme[key].value),
       onChange: onChange(key),
     }}), {} as FormData<T>,
   ));
 
-  return React.createElement(Component, { ...props, data });
+  return React.createElement(Component, { ...props, ...data });
 };
 
 const getElementValue = (input: HTMLInputElement) => {
@@ -76,3 +78,10 @@ const getRadioValue = (input: HTMLInputElement) => {
 const getElementsByName = (name: string) => {
   return Array.from(document.getElementsByName(name)) as HTMLInputElement[];
 };
+
+const miniform = {
+  createFormScheme,
+  withFormData,
+};
+
+export default miniform;
